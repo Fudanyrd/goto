@@ -1,0 +1,4 @@
+"https://go.dev/dl/go1.23.0.linux-amd64.tar.gz"  
+"https://vcg03.cfp.cn/creative/vcg/800/new/VCG211327790854.jpg"  
+"https://jyywiki.cn/pages/OS/2022/demos/minimal.S"  
+"https://go.dev/dl/go1.23.0.linux-amd64.tar.gz" 
