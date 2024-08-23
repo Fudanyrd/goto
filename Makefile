@@ -1,5 +1,6 @@
 src = cat.go cp.go hexdump.go nslookup.go parrot.go request.go server.go wget.go
-exes = cat.exe cp.exe hexdump.exe nslookup.exe parrot.exe request.exe server.exe wget.exe
+exes = cat.exe cp.exe hexdump.exe nslookup.exe parrot.exe request.exe server.exe wget.exe \
+	pwd.exe touch.exe ls.exe
 
 CC = go
 CFLAGS = build
