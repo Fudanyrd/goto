@@ -23,6 +23,17 @@ func ls(dir string) {
 		return;
 	}
 
+	// is dobj a directory?
+	info, err := dobj.Stat();
+	if err != nil {
+		log.Fatal(err);
+		return;
+	}
+	if !info.IsDir() {
+		fmt.Println("not a directory");
+		return;
+	}
+
 	/* read all entries */
 	entries, err := dobj.Readdir(0);
 
