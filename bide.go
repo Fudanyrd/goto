@@ -465,7 +465,7 @@ func (fl *Flist) insertAfter(b int32) {
 }
 
 // execute commands
-func (fl *Flist) exec(args []string) {
+func (fl *Flist) exec(args []string, disp bool) {
 	if len(args) == 0 {
 		// empty commands
 		return;
@@ -481,23 +481,36 @@ func (fl *Flist) exec(args []string) {
 	case "i": if len(args) > 1 { fl.insertBefore(atoi(args[1])); }
 	case "s": if len(args) > 1 { fl.replace(atoi(args[1])); }
 	case "a": if len(args) > 1 { fl.insertAfter(atoi(args[1])); }
+	default: {  // may want to execute a command multiple times.
+		count := atoi(args[0]);
+		for i := int32(0); i < count; i++ {
+			// execute, do not display.
+			fl.exec(args[1:], false);
+		}
+	}
 	}
 
 	// clear and show contents.
-	fl.display();
+	if disp {
+		fl.display();
+	}
 }
 
 // save the file.
 func (fl *Flist) save() {
 	fl.fobj.Seek(0, 0);
+	bwrt := 0;
 	for r := fl.head.next; r != &fl.tail; r = r.next {
 		if r.size > 0 {
-			_, err := fl.fobj.Write(r.row[:r.size]);
+			b, err := fl.fobj.Write(r.row[:r.size]);
 			if err != nil {
 				break;
 			}
+			bwrt += b;
 		}
 	}
+
+	fl.fobj.Truncate(int64(bwrt));
 }
 
 // replace current character
@@ -538,7 +551,7 @@ func main() {
 		// erase the enter key pressed
 		fmt.Printf(Up);
 
-		fl.exec(strings.Fields(msg));
+		fl.exec(strings.Fields(msg), true);
 	}
 
 	// finally save all changes.
