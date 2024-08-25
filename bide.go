@@ -383,6 +383,11 @@ func (fl *Flist) remove() {
 		fl.row.removeAll();
 		fl.row = n;		
 	}
+
+	if fl.row.size <= fl.col {
+		// fl.row.size != 0
+		fl.col = fl.row.size - 1;
+	}
 }
 
 // insert a byte before cursor
@@ -421,7 +426,42 @@ func (fl *Flist) insertBefore(b int32) {
 
 // insert a byte after cursor
 func (fl *Flist) insertAfter(b int32) {
-	// not implemented, don't use
+	if fl.row.size == width {
+		// split the row
+		left := width / 2;
+		// too full, split the row first.
+
+		tmp := make([]Frow, 1);
+		new := &(tmp[0]);
+		new.init();
+		new.size = width - left;
+
+		for i := 0; i < new.size; i++ {
+			new.row[i] = fl.row.row[i + left];
+		}
+		fl.row.size = left;
+
+		// insert the row into the back of fl.row.
+		nxt := fl.row.next;
+		nxt.prev = new;
+		fl.row.next = new;
+		new.prev = fl.row;
+		new.next = nxt;
+
+		if fl.col >= left {
+			// make fl.row point to next row.
+			fl.col -= left;
+			fl.row = new;
+		} else {
+		}
+	}
+
+	if fl.row.size == 0 {
+		fl.row.insertAt(b, fl.col);
+	} else {
+		fl.row.insertAt(b, fl.col + 1);
+		fl.col++;
+	}
 }
 
 // execute commands
@@ -440,6 +480,7 @@ func (fl *Flist) exec(args []string) {
 	case "x": fl.remove();
 	case "i": if len(args) > 1 { fl.insertBefore(atoi(args[1])); }
 	case "s": if len(args) > 1 { fl.replace(atoi(args[1])); }
+	case "a": if len(args) > 1 { fl.insertAfter(atoi(args[1])); }
 	}
 
 	// clear and show contents.
