@@ -15,7 +15,16 @@ import (
 	"io"
 )
 
+const o rune = rune('0');
+const nin rune = rune('9');
+
 func atoi(word string) int32 {
+	var first rune = []rune(word)[0];
+	if first < o || first > nin {
+		// not a number, return the ascii of first character
+		return int32(first);
+	}
+
 	var ret int32 = int32(0);
 	buf := []rune(word);
 
